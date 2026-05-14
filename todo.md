@@ -129,3 +129,9 @@
 ## Phase 14: Bug Fixes & Configuration
 - [x] Fix Vite HMR WebSocket connection error
 - [x] Configure proper HMR settings for development
+
+
+## Phase 15: Button Text Color & English Report
+- [x] Fix button text color to be lighter/white for better visibility
+- [x] Ensure DeepSeek generates English-only reports for US customers
+- [x] Add language enforcement to AI prompt

@@ -31,7 +31,7 @@ const deepseekClient = axios.create({
 
 export async function analyzeBillWithDeepSeek(billContent: string): Promise<string> {
   try {
-    const systemPrompt = `You are an expert financial analyst specializing in bill analysis and cost optimization. 
+    const systemPrompt = `You are an expert financial analyst specializing in bill analysis and cost optimization for US customers.
 Your task is to analyze bill documents and provide a comprehensive HTML report with the following sections:
 
 1. Personal Spending Behavior Optimization & Suggestions
@@ -39,15 +39,18 @@ Your task is to analyze bill documents and provide a comprehensive HTML report w
 3. Bill Issues & Problems (errors, duplicate charges, unauthorized items)
 4. Monthly Savings After Optimization (increased income)
 
+**IMPORTANT: You MUST write the entire report in English only. All content, headings, descriptions, and recommendations must be in English. Do not use any other language.**
+
 Generate the report in clean, professional HTML format with proper styling. Use semantic HTML tags.
 Focus on actionable insights and specific dollar amounts where possible.
-Be direct and specific - avoid generic advice.`;
+Be direct and specific - avoid generic advice.
+Use USD ($) for all currency amounts.`;
 
-    const userPrompt = `Please analyze the following bill content and provide a detailed analysis report in HTML format:
+    const userPrompt = `Please analyze the following bill content and provide a detailed analysis report in HTML format. Write the entire report in English only.
 
 ${billContent}
 
-Generate a comprehensive HTML report with the four sections mentioned. Make sure the HTML is self-contained and can be displayed in a browser.`;
+Generate a comprehensive HTML report with the four sections mentioned. Make sure the HTML is self-contained and can be displayed in a browser. All text must be in English.`;
 
     const messages: DeepSeekMessage[] = [
       {

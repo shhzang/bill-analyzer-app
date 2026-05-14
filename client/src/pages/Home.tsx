@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import AnxietyCarousel from '@/components/AnxietyCarousel';
 import FileUploadZone from '@/components/FileUploadZone';
 import UserTestimonials from '@/components/UserTestimonials';
+import LoadingAnimation from '@/components/LoadingAnimation';
 import { trpc } from '@/lib/trpc';
 import { toast } from 'sonner';
 
@@ -210,20 +211,7 @@ export default function Home() {
             </div>
 
             {/* Analysis status - In Progress */}
-            {isAnalyzing && (
-              <div className="mb-6 p-4 sm:p-6 neon-box rounded-lg border-l-4 border-neon-pink">
-                <div className="flex items-center gap-3">
-                  <Loader2 className="w-6 h-6 text-neon-pink animate-spin" />
-                  <div className="flex-1">
-                    <p className="text-neon-pink font-bold">🤖 AI Analysis in Progress</p>
-                    <p className="text-gray-400 text-sm">Analyzing your bills with advanced AI... This may take a moment.</p>
-                  </div>
-                </div>
-                <div className="mt-3 w-full bg-gray-700 rounded-full h-2 overflow-hidden">
-                  <div className="bg-gradient-to-r from-neon-pink to-neon-cyan h-full animate-pulse" />
-                </div>
-              </div>
-            )}
+            <LoadingAnimation isVisible={isAnalyzing} />
 
             {/* Analysis complete */}
             {analysisReport && !isAnalyzing && (

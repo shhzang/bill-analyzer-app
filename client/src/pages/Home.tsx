@@ -14,6 +14,19 @@ interface UploadedFile {
   type: 'pdf' | 'excel' | 'image' | 'unknown';
 }
 
+// Helper function to convert file to base64
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      resolve(result.split(',')[1]); // Remove data:application/pdf;base64, prefix
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 export default function Home() {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -25,18 +38,52 @@ export default function Home() {
     onSuccess: (data) => {
       if (data.report) {
         setAnalysisReport(data.report);
-        setShowPreview(true);
-        toast.success('Bill analysis completed!');
+        setIsAnalyzing(false);
+        toast.dismiss('analysis-status');
+        toast.success('✅ Analysis complete! Preview or download your personalized report.', {
+          duration: 5000,
+        });
       }
     },
     onError: (error) => {
       console.error('Analysis error:', error);
-      toast.error(error.message || 'Failed to analyze bills. Please try again.');
+      toast.dismiss('analysis-status');
+      toast.error('❌ Failed to analyze bills. Please try again.');
+      setIsAnalyzing(false);
     },
   });
 
   const handleFilesSelected = (files: UploadedFile[]) => {
     setUploadedFiles(files);
+    
+    // Auto-trigger analysis after files are selected
+    setTimeout(() => {
+      handleAnalyzeAuto(files);
+    }, 500);
+  };
+
+  const handleAnalyzeAuto = async (files: UploadedFile[]) => {
+    if (files.length === 0) return;
+    setIsAnalyzing(true);
+    toast.loading('🤖 AI is analyzing your bills...', { id: 'analysis-status' });
+    
+    try {
+      const fileData = await Promise.all(
+        files.map(async (uf) => ({
+          name: uf.file.name,
+          type: uf.file.type,
+          size: uf.file.size,
+          base64: await fileToBase64(uf.file),
+        }))
+      );
+      
+      await analyzeBillsMutation.mutateAsync({ files: fileData });
+    } catch (error) {
+      console.error('Auto-analysis error:', error);
+      toast.dismiss('analysis-status');
+      toast.error('Failed to prepare files for analysis. Please try again.');
+      setIsAnalyzing(false);
+    }
   };
 
   const handleAnalyze = async () => {
@@ -46,6 +93,8 @@ export default function Home() {
     }
 
     setIsAnalyzing(true);
+    toast.loading('🤖 AI is analyzing your bills...', { id: 'analysis-status' });
+    
     try {
       // Convert files to base64 for transmission
       const fileData = await Promise.all(
@@ -63,8 +112,8 @@ export default function Home() {
       });
     } catch (error) {
       console.error('Analysis error:', error);
+      toast.dismiss('analysis-status');
       toast.error('Failed to analyze bills. Please try again.');
-    } finally {
       setIsAnalyzing(false);
     }
   };
@@ -144,57 +193,81 @@ export default function Home() {
         {/* Analysis Section */}
         {uploadedFiles.length > 0 && (
           <section className="mb-12 sm:mb-16">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                onClick={handleAnalyze}
-                disabled={isAnalyzing || uploadedFiles.length === 0}
-                className="flex-1 bg-neon-pink hover:bg-neon-pink/90 text-black font-bold py-3 sm:py-4 text-base sm:text-lg rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-neon-pink/50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isAnalyzing ? (
-                  <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    AI is Analyzing Your Bills...
-                  </>
-                ) : (
-                  <>
-                    <Zap className="w-5 h-5 mr-2" />
-                    Analyze with Advanced AI (FREE)
-                  </>
-                )}
-              </Button>
-
-              {analysisReport && (
-                <>
-                  <Button
-                    onClick={() => setShowPreview(true)}
-                    variant="outline"
-                    className="flex-1 border-neon-cyan text-neon-cyan hover:bg-neon-cyan/10 py-3 sm:py-4 text-base sm:text-lg rounded-lg font-semibold"
-                  >
-                    Preview Report
-                  </Button>
-
-                  <Button
-                    onClick={handleDownloadReport}
-                    variant="outline"
-                    className="flex-1 border-neon-pink text-neon-pink hover:bg-neon-pink/10 py-3 sm:py-4 text-base sm:text-lg rounded-lg font-semibold"
-                  >
-                    Download Report
-                  </Button>
-                </>
-              )}
+            {/* File list and status */}
+            <div className="mb-6 p-4 sm:p-6 neon-box-cyan rounded-lg">
+              <h3 className="text-neon-cyan font-bold mb-3">📁 Uploaded Files ({uploadedFiles.length})</h3>
+              <div className="space-y-2">
+                {uploadedFiles.map((item, index) => (
+                  <div key={index} className="flex items-center justify-between text-sm">
+                    <span className="text-gray-300 truncate flex items-center gap-2">
+                      {item.file.type.startsWith('image/') ? '🖼️' : item.file.type.includes('pdf') ? '📄' : '📊'}
+                      {item.file.name}
+                    </span>
+                    <span className="text-gray-500 ml-2 text-xs">{(item.file.size / 1024 / 1024).toFixed(2)} MB</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
+            {/* Analysis status - In Progress */}
             {isAnalyzing && (
-              <div className="mt-6 p-4 bg-neon-cyan/10 border border-neon-cyan/30 rounded-lg">
+              <div className="mb-6 p-4 sm:p-6 neon-box rounded-lg border-l-4 border-neon-pink">
                 <div className="flex items-center gap-3">
-                  <Loader2 className="w-5 h-5 text-neon-cyan animate-spin" />
+                  <Loader2 className="w-6 h-6 text-neon-pink animate-spin" />
+                  <div className="flex-1">
+                    <p className="text-neon-pink font-bold">🤖 AI Analysis in Progress</p>
+                    <p className="text-gray-400 text-sm">Analyzing your bills with advanced AI... This may take a moment.</p>
+                  </div>
+                </div>
+                <div className="mt-3 w-full bg-gray-700 rounded-full h-2 overflow-hidden">
+                  <div className="bg-gradient-to-r from-neon-pink to-neon-cyan h-full animate-pulse" />
+                </div>
+              </div>
+            )}
+
+            {/* Analysis complete */}
+            {analysisReport && !isAnalyzing && (
+              <div className="mb-6 p-4 sm:p-6 neon-box rounded-lg border-l-4 border-neon-cyan">
+                <div className="flex items-center gap-3">
+                  <div className="text-2xl">✅</div>
                   <div>
-                    <p className="text-neon-cyan font-semibold">Analyzing your bills...</p>
-                    <p className="text-gray-400 text-sm">This may take a moment. Our AI is reviewing your documents.</p>
+                    <p className="text-neon-cyan font-bold">Analysis Complete!</p>
+                    <p className="text-gray-400 text-sm">Your personalized bill analysis report is ready. Click below to preview or download.</p>
                   </div>
                 </div>
               </div>
             )}
+
+            {/* Action buttons */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              {!isAnalyzing && !analysisReport && (
+                <Button
+                  onClick={handleAnalyze}
+                  disabled={isAnalyzing || uploadedFiles.length === 0}
+                  className="flex-1 bg-neon-pink hover:bg-neon-pink/90 text-black font-bold py-3 sm:py-4 text-base sm:text-lg rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-neon-pink/50"
+                >
+                  <Zap className="w-5 h-5 mr-2" />
+                  Analyze with Advanced AI (FREE)
+                </Button>
+              )}
+
+              {analysisReport && !isAnalyzing && (
+                <>
+                  <Button
+                    onClick={() => setShowPreview(true)}
+                    className="flex-1 bg-neon-cyan hover:bg-neon-cyan/90 text-black font-bold py-3 sm:py-4 text-base sm:text-lg rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-neon-cyan/50"
+                  >
+                    👁️ Preview Report
+                  </Button>
+                  <Button
+                    onClick={handleDownloadReport}
+                    className="flex-1 bg-neon-pink hover:bg-neon-pink/90 text-black font-bold py-3 sm:py-4 text-base sm:text-lg rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-neon-pink/50"
+                  >
+                    ⬇️ Download Report
+                  </Button>
+                </>
+              )}
+            </div>
           </section>
         )}
 
@@ -230,7 +303,7 @@ export default function Home() {
       <Dialog open={showPreview} onOpenChange={setShowPreview}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-[#1a1a2e] border-neon-cyan/30">
           <DialogHeader>
-            <DialogTitle className="text-neon-pink glow-text">Bill Analysis Report</DialogTitle>
+            <DialogTitle className="text-neon-pink glow-text">📊 Your Bill Analysis Report</DialogTitle>
           </DialogHeader>
           {analysisReport && (
             <div
@@ -294,15 +367,4 @@ export default function Home() {
   );
 }
 
-// Helper function to convert File to base64
-function fileToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      resolve(result.split(',')[1] || '');
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
+

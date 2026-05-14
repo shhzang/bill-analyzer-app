@@ -8,4 +8,4 @@ Disallow: /node_modules/
 Crawl-delay: 1
 
 # Sitemaps (update domain based on your deployment)
-Sitemap: https://YOUR_DOMAIN/sitemap.xml
+Sitemap: https://www.billanalyzr.xyz/sitemap.xml

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import AnxietyCarousel from '@/components/AnxietyCarousel';
 import FileUploadZone from '@/components/FileUploadZone';
+import UserTestimonials from '@/components/UserTestimonials';
 import { trpc } from '@/lib/trpc';
 import { toast } from 'sonner';
 
@@ -120,6 +121,9 @@ export default function Home() {
           </div>
           <AnxietyCarousel />
         </section>
+
+        {/* User Testimonials Section */}
+        <UserTestimonials />
 
         {/* File Upload Section */}
         <section className="mb-12 sm:mb-16">

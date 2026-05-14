@@ -107,7 +107,6 @@ function wrapHtmlReport(content: string): string {
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       line-height: 1.6;
-      color: #333;
       background: linear-gradient(135deg, #0a0e27 0%, #1a0a2e 100%);
       color: #e0e0e0;
       padding: 20px;
@@ -142,13 +141,16 @@ function wrapHtmlReport(content: string): string {
     p {
       margin-bottom: 15px;
       line-height: 1.8;
+      color: #e0e0e0;
     }
     ul, ol {
       margin-left: 20px;
       margin-bottom: 15px;
+      color: #e0e0e0;
     }
     li {
       margin-bottom: 8px;
+      color: #e0e0e0;
     }
     .section {
       margin-bottom: 30px;
@@ -196,6 +198,16 @@ function wrapHtmlReport(content: string): string {
       font-family: 'Courier New', monospace;
       color: #00ff88;
     }
+    td, th {
+      color: #e0e0e0;
+    }
+    a {
+      color: #00f5ff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -220,6 +232,16 @@ function wrapHtmlReport(content: string): string {
       color: #e0e0e0;
       background: linear-gradient(135deg, #0a0e27 0%, #1a0a2e 100%);
       padding: 20px;
+    }
+    p {
+      color: #e0e0e0;
+    }
+    pre {
+      color: #e0e0e0;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
     }
     .container {
       max-width: 900px;

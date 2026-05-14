@@ -91,12 +91,17 @@ export default function Home() {
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold glow-text uppercase tracking-wider">
               Bill Analyzer
             </h1>
+            <div className="ml-auto">
+              <span className="inline-block bg-neon-pink text-black px-3 py-1 rounded-full text-xs sm:text-sm font-bold glow-text">
+                100% FREE
+              </span>
+            </div>
           </div>
-          <p className="text-neon-cyan glow-text-cyan text-sm sm:text-base">
-            Discover hidden fees. Reclaim your money. Take control of your finances.
+          <p className="text-neon-cyan glow-text-cyan text-sm sm:text-base font-semibold">
+            🤖 Powered by Advanced AI • Find Hidden Fees • Reclaim Your Money
           </p>
           <p className="text-gray-400 text-xs sm:text-sm mt-2">
-            Analyze your bills with AI-powered insights. Find savings, identify errors, take action.
+            Analyze your bills with cutting-edge AI technology. Discover hidden charges, identify billing errors, and get actionable savings strategies. Your data is secure and never shared.
           </p>
         </div>
       </header>
@@ -107,8 +112,11 @@ export default function Home() {
         <section className="mb-12 sm:mb-16">
           <div className="mb-4">
             <h2 className="text-xl sm:text-2xl font-bold text-neon-pink glow-text uppercase tracking-wider">
-              Why You Need Bill Analysis
+              Why You Need AI-Powered Bill Analysis
             </h2>
+            <p className="text-gray-400 text-sm mt-2">
+              Most people leave thousands of dollars on the table every year. Our AI finds what you miss.
+            </p>
           </div>
           <AnxietyCarousel />
         </section>
@@ -117,10 +125,10 @@ export default function Home() {
         <section className="mb-12 sm:mb-16">
           <div className="mb-6">
             <h2 className="text-xl sm:text-2xl font-bold text-neon-pink glow-text uppercase tracking-wider mb-2">
-              Upload Your Bills
+              Upload Your Bills (It's Free!)
             </h2>
             <p className="text-gray-400 text-sm">
-              Upload your bill documents and let our AI analyze them for hidden fees, errors, and savings opportunities.
+              Upload your bill documents and let our advanced AI analyze them instantly for hidden fees, billing errors, and personalized savings opportunities. No credit card required.
             </p>
           </div>
 
@@ -141,12 +149,12 @@ export default function Home() {
                 {isAnalyzing ? (
                   <>
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Analyzing Your Bills...
+                    AI is Analyzing Your Bills...
                   </>
                 ) : (
                   <>
                     <Zap className="w-5 h-5 mr-2" />
-                    Analyze Bills with AI
+                    Analyze with Advanced AI (FREE)
                   </>
                 )}
               </Button>
@@ -189,26 +197,26 @@ export default function Home() {
         {/* Info Section */}
         <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
           <div className="neon-box p-4 sm:p-6 rounded-lg">
-            <div className="text-2xl sm:text-3xl mb-3">🔍</div>
-            <h3 className="text-neon-cyan font-bold mb-2">Identify Issues</h3>
+            <div className="text-2xl sm:text-3xl mb-3">🤖</div>
+            <h3 className="text-neon-cyan font-bold mb-2">AI-Powered Analysis</h3>
             <p className="text-gray-400 text-sm">
-              Our AI finds duplicate charges, billing errors, and unauthorized subscriptions.
+              Our advanced AI finds duplicate charges, billing errors, and unauthorized subscriptions that humans miss.
             </p>
           </div>
 
           <div className="neon-box p-4 sm:p-6 rounded-lg">
             <div className="text-2xl sm:text-3xl mb-3">💰</div>
-            <h3 className="text-neon-cyan font-bold mb-2">Calculate Savings</h3>
+            <h3 className="text-neon-cyan font-bold mb-2">Real Savings</h3>
             <p className="text-gray-400 text-sm">
-              Get exact numbers on how much you can save monthly by optimizing your bills.
+              Get exact numbers on how much you can save monthly. Potential savings vary based on your bills.
             </p>
           </div>
 
           <div className="neon-box p-4 sm:p-6 rounded-lg">
-            <div className="text-2xl sm:text-3xl mb-3">✅</div>
-            <h3 className="text-neon-cyan font-bold mb-2">Take Action</h3>
+            <div className="text-2xl sm:text-3xl mb-3">⚡</div>
+            <h3 className="text-neon-cyan font-bold mb-2">Instant Action Plan</h3>
             <p className="text-gray-400 text-sm">
-              Get step-by-step instructions to cancel subscriptions, call providers, and file complaints.
+              Get step-by-step instructions to cancel subscriptions, call providers, and file complaints—all free.
             </p>
           </div>
         </section>
@@ -251,28 +259,30 @@ export default function Home() {
             <div>
               <h4 className="text-neon-pink font-bold mb-2">Bill Analyzer</h4>
               <p className="text-gray-400 text-sm">
-                AI-powered bill analysis to help you find hidden fees and save money.
+                Free AI-powered bill analysis. Find hidden fees, billing errors, and save money every month. No credit card required.
               </p>
             </div>
             <div>
-              <h4 className="text-neon-cyan font-bold mb-2">Features</h4>
+              <h4 className="text-neon-cyan font-bold mb-2">What We Find</h4>
               <ul className="text-gray-400 text-sm space-y-1">
-                <li>• Identify billing errors</li>
-                <li>• Find hidden charges</li>
-                <li>• Calculate monthly savings</li>
+                <li>• Duplicate charges & errors</li>
+                <li>• Unauthorized subscriptions</li>
+                <li>• Overcharge opportunities</li>
+                <li>• Monthly savings potential</li>
               </ul>
             </div>
             <div>
               <h4 className="text-neon-cyan font-bold mb-2">Supported Formats</h4>
               <ul className="text-gray-400 text-sm space-y-1">
                 <li>• PDF documents</li>
-                <li>• Excel spreadsheets</li>
-                <li>• Bill photos & images</li>
+                <li>• Excel spreadsheets (CSV)</li>
+                <li>• Bill photos & screenshots</li>
+                <li>• All image formats</li>
               </ul>
             </div>
           </div>
           <div className="border-t border-neon-cyan/20 pt-4 text-center text-gray-500 text-xs">
-            <p>&copy; 2026 Bill Analyzer. All rights reserved. | Privacy Policy | Terms of Service</p>
+            <p>&copy; 2026 Bill Analyzer. 100% Free. Powered by Advanced AI. | Privacy Policy | Terms of Service</p>
           </div>
         </div>
       </footer>

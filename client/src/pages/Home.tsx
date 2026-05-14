@@ -255,15 +255,15 @@ export default function Home() {
                 <>
                   <Button
                     onClick={() => setShowPreview(true)}
-                    className="flex-1 bg-neon-cyan hover:bg-neon-cyan/90 text-black font-bold py-3 sm:py-4 text-base sm:text-lg rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-neon-cyan/50"
+                    className="flex-1 bg-neon-cyan hover:bg-neon-cyan/80 text-black font-bold py-4 sm:py-5 text-lg sm:text-xl rounded-lg transition-all duration-200 hover:shadow-xl hover:shadow-neon-cyan/60 active:scale-95 border-2 border-neon-cyan/30"
                   >
-                    👁️ Preview Report
+                    <span className="text-xl mr-2">👁️</span>Preview Report
                   </Button>
                   <Button
                     onClick={handleDownloadReport}
-                    className="flex-1 bg-neon-pink hover:bg-neon-pink/90 text-black font-bold py-3 sm:py-4 text-base sm:text-lg rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-neon-pink/50"
+                    className="flex-1 bg-neon-pink hover:bg-neon-pink/80 text-black font-bold py-4 sm:py-5 text-lg sm:text-xl rounded-lg transition-all duration-200 hover:shadow-xl hover:shadow-neon-pink/60 active:scale-95 border-2 border-neon-pink/30"
                   >
-                    ⬇️ Download Report
+                    <span className="text-xl mr-2">⬇️</span>Download Report
                   </Button>
                 </>
               )}
@@ -314,16 +314,15 @@ export default function Home() {
           <div className="flex gap-3 mt-6 pt-4 border-t border-neon-cyan/20">
             <Button
               onClick={handleDownloadReport}
-              className="flex-1 bg-neon-pink hover:bg-neon-pink/90 text-black font-bold"
+              className="flex-1 bg-neon-pink hover:bg-neon-pink/80 text-black font-bold py-3 sm:py-4 text-base sm:text-lg rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-neon-pink/60 active:scale-95 border-2 border-neon-pink/30"
             >
-              Download Report
+              ⬇️ Download Report
             </Button>
             <Button
               onClick={() => setShowPreview(false)}
-              variant="outline"
-              className="flex-1 border-neon-cyan text-neon-cyan hover:bg-neon-cyan/10"
+              className="flex-1 bg-neon-cyan/20 hover:bg-neon-cyan/40 text-neon-cyan font-bold py-3 sm:py-4 text-base sm:text-lg rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-neon-cyan/40 border-2 border-neon-cyan/50"
             >
-              Close
+              ✕ Close
             </Button>
           </div>
         </DialogContent>

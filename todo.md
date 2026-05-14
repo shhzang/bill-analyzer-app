@@ -108,3 +108,11 @@
 - [x] Show analysis completion with preview/download options
 - [x] Add loading animations and status messages
 - [x] Handle analysis errors gracefully
+
+
+## Phase 12: Button UX & Visibility Improvements
+- [x] Fix Preview Report button styling (improve contrast and visibility)
+- [x] Fix Download Report button styling (improve contrast and visibility)
+- [x] Ensure button text is clearly readable
+- [x] Add button hover effects for better feedback
+- [x] Test button visibility on mobile devices

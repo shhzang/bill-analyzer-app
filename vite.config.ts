@@ -169,7 +169,7 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: {
-    host: true,
+    host: "0.0.0.0",
     allowedHosts: [
       ".manuspre.computer",
       ".manus.computer",
@@ -180,12 +180,11 @@ export default defineConfig({
       "127.0.0.1",
     ],
     fs: {
-      strict: true,
+      strict: false,
       deny: ["**/.*"],
     },
     hmr: {
       protocol: "wss",
-      host: "3000-i9czegbcc4gnk5ofpr6j5-438e8ba6.sg1.manus.computer",
       port: 443,
     },
   },

@@ -1,11 +1,19 @@
+# Allow all crawlers
 User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /.env
 Disallow: /node_modules/
 
-# Crawl delay (in seconds)
-Crawl-delay: 1
-
-# Sitemaps (update domain based on your deployment)
+# Sitemaps
 Sitemap: https://www.billanalyzr.xyz/sitemap.xml
+
+# Google-specific settings
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Bing-specific settings
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0

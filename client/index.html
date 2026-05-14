@@ -3,24 +3,123 @@
 
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>Bill Analyzer - Smart Bill Analysis App</title>    
-    <!-- THIS IS THE START OF A COMMENT BLOCK, BLOCK TO BE DELETED: Google Fonts here, example:
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    
+    <!-- Primary Meta Tags for SEO -->
+    <title>Bill Analyzer - Find Hidden Fees & Save Money on Your Bills</title>
+    <meta name="title" content="Bill Analyzer - Find Hidden Fees & Save Money on Your Bills" />
+    <meta name="description" content="Discover hidden charges in your bills. AI-powered analysis for credit cards, medical, insurance, mortgage, and phone bills. Find errors, identify savings, take action. Free bill analysis tool for Americans." />
+    <meta name="keywords" content="bill analyzer, hidden fees, billing errors, medical bill analysis, credit card fees, insurance billing, mortgage analysis, phone bill savings, bill review tool, AI bill analysis" />
+    <meta name="author" content="Bill Analyzer" />
+    <meta name="language" content="English" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bill-analyzer.manus.space/" />
+    <meta property="og:title" content="Bill Analyzer - Find Hidden Fees & Save Money" />
+    <meta property="og:description" content="Discover hidden charges in your bills with AI-powered analysis. Find errors, identify savings, take action. Analyze credit cards, medical, insurance, mortgage, and phone bills." />
+    <meta property="og:image" content="https://bill-analyzer.manus.space/og-image.png" />
+    <meta property="og:site_name" content="Bill Analyzer" />
+    <meta property="og:locale" content="en_US" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://bill-analyzer.manus.space/" />
+    <meta property="twitter:title" content="Bill Analyzer - Find Hidden Fees & Save Money" />
+    <meta property="twitter:description" content="Discover hidden charges in your bills with AI-powered analysis. Find errors, identify savings, take action." />
+    <meta property="twitter:image" content="https://bill-analyzer.manus.space/og-image.png" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://bill-analyzer.manus.space/" />
+    
+    <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    THIS IS THE END OF A COMMENT BLOCK, BLOCK TO BE DELETED -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    
+    <!-- Structured Data (Schema.org) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Bill Analyzer",
+      "description": "AI-powered bill analysis tool to find hidden fees, billing errors, and savings opportunities",
+      "url": "https://bill-analyzer.manus.space/",
+      "applicationCategory": "FinanceApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "Bill Analyzer"
+      }
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What types of bills can Bill Analyzer review?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bill Analyzer can review credit card statements, medical bills, insurance statements, mortgage documents, phone bills, and utility bills in PDF, Excel, or image formats."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much can I save with Bill Analyzer?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Savings vary by individual, but users typically find hundreds to thousands of dollars in hidden fees, billing errors, and optimization opportunities annually."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my financial information secure?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, all uploaded documents are processed securely and deleted after analysis. We do not store or share your personal financial information."
+          }
+        }
+      ]
+    }
+    </script>
   </head>
 
   <body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+    
     <div id="root"></div>
+    
+    <!-- Main content marker for accessibility -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const mainElement = document.querySelector('main');
+        if (mainElement) {
+          mainElement.id = 'main-content';
+          mainElement.setAttribute('role', 'main');
+        }
+      });
+    </script>
+    
     <script type="module" src="/src/main.tsx"></script>
-    <script
-      defer
-      src="%VITE_ANALYTICS_ENDPOINT%/umami"
-      data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"></script>
+    <!-- Analytics -->
+    <script defer src="%VITE_ANALYTICS_ENDPOINT%/umami" data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"></script>
+    
+    <!-- Google Site Verification (add your verification code) -->
+    <!-- <meta name="google-site-verification" content="your-verification-code" /> -->
+    
+    <!-- Sitemap and RSS Feed -->
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
   </body>
 
 </html>

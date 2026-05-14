@@ -13,7 +13,11 @@ interface DeepSeekResponse {
   }>;
 }
 
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || 'sk-7828c2cbf4964bdf89ef3e46e8c21429';
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+
+if (!DEEPSEEK_API_KEY) {
+  throw new Error('DEEPSEEK_API_KEY environment variable is not set. Please configure it before running the application.');
+}
 const DEEPSEEK_BASE_URL = 'https://api.deepseek.com';
 const DEEPSEEK_MODEL = 'deepseek-v4-pro';
 

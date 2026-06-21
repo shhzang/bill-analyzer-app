@@ -142,6 +142,13 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-dark-deep text-foreground">
+      {/* Share Section - Very Top of Page */}
+      <div className="bg-gradient-to-b from-[#0a0e27] to-transparent border-b border-neon-cyan/10">
+        <div className="container py-4 sm:py-6">
+          <ShareButtons />
+        </div>
+      </div>
+
       {/* Header with SEO optimization */}
       <header className="border-b border-neon-cyan/20 bg-gradient-to-b from-[#1a0a2e] to-transparent">
         <div className="container py-6 sm:py-8">
@@ -164,13 +171,6 @@ export default function Home() {
           </p>
         </div>
       </header>
-
-      {/* Share Section - Top of Page */}
-      <div className="bg-gradient-to-b from-[#0a0e27]/50 to-transparent border-b border-neon-cyan/10">
-        <div className="container py-6 sm:py-8">
-          <ShareButtons />
-        </div>
-      </div>
 
       {/* Main content */}
       <main className="container py-8 sm:py-12">

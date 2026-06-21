@@ -156,8 +156,8 @@ export default function UserInfoModal({ isOpen, onClose, onSubmit }: UserInfoMod
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-black border-2 border-neon-cyan/50">
+    <Dialog open={isOpen} onOpenChange={() => {}}>
+      <DialogContent className="sm:max-w-md bg-black border-2 border-neon-cyan/50" onPointerDownOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-neon-cyan">
             ⚡ User Information
@@ -312,7 +312,12 @@ export default function UserInfoModal({ isOpen, onClose, onSubmit }: UserInfoMod
             </Button>
             <Button
               type="button"
-              onClick={onClose}
+              onClick={() => {
+                setFormData({ fullName: '', phone: '', country: '', email: '' });
+                setSearchTerm('');
+                setErrors({});
+                onClose();
+              }}
               className="flex-1 bg-neon-cyan/20 text-neon-cyan font-bold py-3 rounded-lg border-2 border-neon-cyan/50 hover:bg-neon-cyan/40 transition-all active:scale-95"
             >
               Cancel

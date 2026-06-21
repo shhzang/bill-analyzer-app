@@ -1,0 +1,9 @@
+{
+  "query": "DELETE FROM userSubmissions WHERE email = 'john@example.com';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 9n73TahrDCqoqaB.5216bdbd0006 --database V4vHsytsuE3eXRF5pkpYvs --execute DELETE FROM userSubmissions WHERE email = 'john@example.com';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1804
+}

@@ -1,0 +1,18 @@
+{
+  "query": "SELECT * FROM userSubmissions ORDER BY createdAt DESC LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 9n73TahrDCqoqaB.5216bdbd0006 --database V4vHsytsuE3eXRF5pkpYvs --execute SELECT * FROM userSubmissions ORDER BY createdAt DESC LIMIT 10;",
+  "rows": [
+    {
+      "id": "1",
+      "fullName": "John Doe",
+      "phone": "+1234567890",
+      "country": "United States",
+      "email": "john@example.com",
+      "createdAt": "2026-06-21 02:16:44"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tfullName\tphone\tcountry\temail\tcreatedAt\n1\tJohn Doe\t+1234567890\tUnited States\tjohn@example.com\t2026-06-21 02:16:44\n",
+  "stderr": "",
+  "execution_time_ms": 1747
+}

@@ -331,13 +331,12 @@ export default function Home() {
       </Dialog>
 
       {/* Admin Link */}
-      <div className="fixed bottom-8 right-8 z-50">
+      <div className="fixed bottom-6 right-6">
         <a
           href="/admin"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-neon-pink to-neon-pink/80 text-white font-bold rounded-lg shadow-lg shadow-neon-pink/50 hover:shadow-xl hover:shadow-neon-pink/70 transition-all hover:scale-105 active:scale-95"
+          className="inline-block px-4 py-2 bg-neon-pink/20 text-neon-pink text-xs font-bold rounded-lg border border-neon-pink/50 hover:bg-neon-pink/30 transition-all"
         >
-          <span className="text-lg">🔐</span>
-          <span>Admin Panel</span>
+          🔐 Admin
         </a>
       </div>
 

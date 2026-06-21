@@ -1,0 +1,216 @@
+import { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { trpc } from '@/lib/trpc';
+import { toast } from 'sonner';
+import { ChevronDown } from 'lucide-react';
+
+interface UserInfoModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: () => void;
+}
+
+const COUNTRIES = [
+  'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Argentina', 'Armenia', 'Australia',
+  'Austria', 'Azerbaijan', 'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium',
+  'Belize', 'Benin', 'Bhutan', 'Bolivia', 'Bosnia and Herzegovina', 'Botswana', 'Brazil', 'Brunei',
+  'Bulgaria', 'Burkina Faso', 'Burundi', 'Cambodia', 'Cameroon', 'Canada', 'Cape Verde', 'Central African Republic',
+  'Chad', 'Chile', 'China', 'Colombia', 'Comoros', 'Congo', 'Costa Rica', 'Croatia', 'Cuba', 'Cyprus',
+  'Czech Republic', 'Denmark', 'Djibouti', 'Dominica', 'Dominican Republic', 'Ecuador', 'Egypt', 'El Salvador',
+  'Equatorial Guinea', 'Eritrea', 'Estonia', 'Ethiopia', 'Fiji', 'Finland', 'France', 'Gabon', 'Gambia',
+  'Georgia', 'Germany', 'Ghana', 'Greece', 'Grenada', 'Guatemala', 'Guinea', 'Guinea-Bissau', 'Guyana',
+  'Haiti', 'Honduras', 'Hungary', 'Iceland', 'India', 'Indonesia', 'Iran', 'Iraq', 'Ireland', 'Israel',
+  'Italy', 'Jamaica', 'Japan', 'Jordan', 'Kazakhstan', 'Kenya', 'Kiribati', 'Kosovo', 'Kuwait', 'Kyrgyzstan',
+  'Laos', 'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya', 'Liechtenstein', 'Lithuania', 'Luxembourg',
+  'Madagascar', 'Malawi', 'Malaysia', 'Maldives', 'Mali', 'Malta', 'Marshall Islands', 'Mauritania',
+  'Mauritius', 'Mexico', 'Micronesia', 'Moldova', 'Monaco', 'Mongolia', 'Montenegro', 'Morocco', 'Mozambique',
+  'Myanmar', 'Namibia', 'Nauru', 'Nepal', 'Netherlands', 'New Zealand', 'Nicaragua', 'Niger', 'Nigeria',
+  'North Korea', 'North Macedonia', 'Norway', 'Oman', 'Pakistan', 'Palau', 'Palestine', 'Panama',
+  'Papua New Guinea', 'Paraguay', 'Peru', 'Philippines', 'Poland', 'Portugal', 'Qatar', 'Romania',
+  'Russia', 'Rwanda', 'Saint Kitts and Nevis', 'Saint Lucia', 'Saint Vincent and the Grenadines',
+  'Samoa', 'San Marino', 'Sao Tome and Principe', 'Saudi Arabia', 'Senegal', 'Serbia', 'Seychelles',
+  'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia', 'Solomon Islands', 'Somalia', 'South Africa',
+  'South Korea', 'South Sudan', 'Spain', 'Sri Lanka', 'Sudan', 'Suriname', 'Sweden', 'Switzerland',
+  'Syria', 'Taiwan', 'Tajikistan', 'Tanzania', 'Thailand', 'Timor-Leste', 'Togo', 'Tonga',
+  'Trinidad and Tobago', 'Tunisia', 'Turkey', 'Turkmenistan', 'Tuvalu', 'Uganda', 'Ukraine',
+  'United Arab Emirates', 'United Kingdom', 'United States', 'Uruguay', 'Uzbekistan', 'Vanuatu',
+  'Vatican City', 'Venezuela', 'Vietnam', 'Yemen', 'Zambia', 'Zimbabwe'
+];
+
+export default function UserInfoModal({ isOpen, onClose, onSubmit }: UserInfoModalProps) {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    phone: '',
+    country: '',
+    email: '',
+  });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const submitMutation = trpc.submissions.create.useMutation({
+    onSuccess: () => {
+      toast.success('✅ Information submitted successfully!');
+      setFormData({ fullName: '', phone: '', country: '', email: '' });
+      setSearchTerm('');
+      onSubmit();
+      onClose();
+    },
+    onError: (error) => {
+      toast.error(`❌ ${error.message}`);
+      setIsSubmitting(false);
+    },
+  });
+
+  const filteredCountries = COUNTRIES.filter(country =>
+    country.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.fullName.trim()) {
+      toast.error('Please enter your full name');
+      return;
+    }
+    if (!formData.phone.trim()) {
+      toast.error('Please enter your phone number');
+      return;
+    }
+    if (!formData.country.trim()) {
+      toast.error('Please select your country');
+      return;
+    }
+    if (!formData.email.trim()) {
+      toast.error('Please enter your email');
+      return;
+    }
+
+    setIsSubmitting(true);
+    await submitMutation.mutateAsync(formData);
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-md bg-black border-2 border-neon-cyan/50">
+        <DialogHeader>
+          <DialogTitle className="text-2xl font-bold text-neon-cyan">
+            ⚡ User Information
+          </DialogTitle>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Full Name */}
+          <div>
+            <label className="block text-sm font-medium text-neon-cyan mb-2">
+              Full Name *
+            </label>
+            <input
+              type="text"
+              value={formData.fullName}
+              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+              className="w-full px-4 py-2 bg-black border-2 border-neon-cyan/30 text-white rounded-lg focus:outline-none focus:border-neon-cyan focus:shadow-lg focus:shadow-neon-cyan/50 transition-all"
+              placeholder="Enter your full name"
+            />
+          </div>
+
+          {/* Phone */}
+          <div>
+            <label className="block text-sm font-medium text-neon-cyan mb-2">
+              Phone *
+            </label>
+            <input
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              className="w-full px-4 py-2 bg-black border-2 border-neon-cyan/30 text-white rounded-lg focus:outline-none focus:border-neon-cyan focus:shadow-lg focus:shadow-neon-cyan/50 transition-all"
+              placeholder="Enter your phone number"
+            />
+          </div>
+
+          {/* Country */}
+          <div>
+            <label className="block text-sm font-medium text-neon-cyan mb-2">
+              Country *
+            </label>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+                className="w-full px-4 py-2 bg-black border-2 border-neon-cyan/30 text-white rounded-lg focus:outline-none focus:border-neon-cyan focus:shadow-lg focus:shadow-neon-cyan/50 transition-all flex justify-between items-center"
+              >
+                <span>{formData.country || 'Select country...'}</span>
+                <ChevronDown size={18} className={`transition-transform ${showCountryDropdown ? 'rotate-180' : ''}`} />
+              </button>
+
+              {showCountryDropdown && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-black border-2 border-neon-cyan/50 rounded-lg shadow-lg shadow-neon-cyan/30 z-50 max-h-48 overflow-hidden flex flex-col">
+                  <input
+                    type="text"
+                    placeholder="Search country..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="px-4 py-2 bg-black border-b-2 border-neon-cyan/30 text-white focus:outline-none"
+                  />
+                  <div className="overflow-y-auto">
+                    {filteredCountries.length > 0 ? (
+                      filteredCountries.map((country) => (
+                        <button
+                          key={country}
+                          type="button"
+                          onClick={() => {
+                            setFormData({ ...formData, country });
+                            setShowCountryDropdown(false);
+                            setSearchTerm('');
+                          }}
+                          className="w-full text-left px-4 py-2 text-white hover:bg-neon-cyan/20 hover:text-neon-cyan transition-colors"
+                        >
+                          {country}
+                        </button>
+                      ))
+                    ) : (
+                      <div className="px-4 py-2 text-gray-400">No countries found</div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Email */}
+          <div>
+            <label className="block text-sm font-medium text-neon-cyan mb-2">
+              Email *
+            </label>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className="w-full px-4 py-2 bg-black border-2 border-neon-cyan/30 text-white rounded-lg focus:outline-none focus:border-neon-cyan focus:shadow-lg focus:shadow-neon-cyan/50 transition-all"
+              placeholder="Enter your email"
+            />
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex gap-3 pt-4">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex-1 bg-neon-cyan text-black font-bold py-3 rounded-lg hover:shadow-lg hover:shadow-neon-cyan/60 transition-all active:scale-95 disabled:opacity-50"
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit'}
+            </Button>
+            <Button
+              type="button"
+              onClick={onClose}
+              className="flex-1 bg-neon-cyan/20 text-neon-cyan font-bold py-3 rounded-lg border-2 border-neon-cyan/50 hover:bg-neon-cyan/40 transition-all active:scale-95"
+            >
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

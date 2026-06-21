@@ -4,6 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { analyzeBillWithDeepSeek, extractTextFromBase64 } from "./deepseek";
+import { createUserSubmission, getAllUserSubmissions } from "./db";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -57,6 +58,48 @@ export const appRouter = router({
           throw new Error('Failed to analyze bills');
         }
       }),
+  }),
+
+  submissions: router({
+    create: publicProcedure
+      .input(
+        z.object({
+          fullName: z.string().min(1, "Full name is required"),
+          phone: z.string().min(1, "Phone is required"),
+          country: z.string().min(1, "Country is required"),
+          email: z.string().email("Valid email is required"),
+        })
+      )
+      .mutation(async ({ input }) => {
+        try {
+          await createUserSubmission({
+            fullName: input.fullName,
+            phone: input.phone,
+            country: input.country,
+            email: input.email,
+          });
+          return {
+            success: true,
+            message: "User information submitted successfully",
+          };
+        } catch (error) {
+          console.error('Submission error:', error);
+          throw new Error('Failed to submit user information');
+        }
+      }),
+
+    getAll: publicProcedure.query(async () => {
+      try {
+        const submissions = await getAllUserSubmissions();
+        return {
+          success: true,
+          data: submissions,
+        };
+      } catch (error) {
+        console.error('Get submissions error:', error);
+        throw new Error('Failed to retrieve submissions');
+      }
+    }),
   }),
 });
 

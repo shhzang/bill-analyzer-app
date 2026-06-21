@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, userSubmissions, InsertUserSubmission } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,38 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// User submission queries
+export async function createUserSubmission(submission: InsertUserSubmission) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create submission: database not available");
+    return undefined;
+  }
+
+  try {
+    const result = await db.insert(userSubmissions).values(submission);
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to create submission:", error);
+    throw error;
+  }
+}
+
+export async function getAllUserSubmissions() {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get submissions: database not available");
+    return [];
+  }
+
+  try {
+    const result = await db
+      .select()
+      .from(userSubmissions)
+      .orderBy(desc(userSubmissions.createdAt));
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to get submissions:", error);
+    throw error;
+  }
+}

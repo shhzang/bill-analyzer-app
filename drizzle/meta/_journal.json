@@ -8,6 +8,13 @@
       "when": 1778727105248,
       "tag": "0000_clever_guardian",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1782008004270,
+      "tag": "0001_nervous_penance",
+      "breakpoints": true
     }
   ]
 }

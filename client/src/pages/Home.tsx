@@ -6,6 +6,7 @@ import AnxietyCarousel from '@/components/AnxietyCarousel';
 import FileUploadZone from '@/components/FileUploadZone';
 import UserTestimonials from '@/components/UserTestimonials';
 import LoadingAnimation from '@/components/LoadingAnimation';
+import UserInfoModal from '@/components/UserInfoModal';
 import { trpc } from '@/lib/trpc';
 import { toast } from 'sonner';
 
@@ -33,6 +34,7 @@ export default function Home() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisReport, setAnalysisReport] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [showUserInfoModal, setShowUserInfoModal] = useState(false);
 
   // Initialize tRPC mutation for bill analysis
   const analyzeBillsMutation = trpc.bills.analyze.useMutation({
@@ -57,9 +59,14 @@ export default function Home() {
   const handleFilesSelected = (files: UploadedFile[]) => {
     setUploadedFiles(files);
     
-    // Auto-trigger analysis after files are selected
+    // Show user info modal before analyzing
+    setShowUserInfoModal(true);
+  };
+
+  const handleUserInfoSubmitted = () => {
+    // Auto-trigger analysis after user info is submitted
     setTimeout(() => {
-      handleAnalyzeAuto(files);
+      handleAnalyzeAuto(uploadedFiles);
     }, 500);
   };
 
@@ -287,6 +294,13 @@ export default function Home() {
         </section>
       </main>
 
+      {/* User Info Modal */}
+      <UserInfoModal
+        isOpen={showUserInfoModal}
+        onClose={() => setShowUserInfoModal(false)}
+        onSubmit={handleUserInfoSubmitted}
+      />
+
       {/* Report Preview Dialog */}
       <Dialog open={showPreview} onOpenChange={setShowPreview}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-[#1a1a2e] border-neon-cyan/30">
@@ -315,6 +329,16 @@ export default function Home() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Admin Link */}
+      <div className="fixed bottom-6 right-6">
+        <a
+          href="/admin"
+          className="inline-block px-4 py-2 bg-neon-pink/20 text-neon-pink text-xs font-bold rounded-lg border border-neon-pink/50 hover:bg-neon-pink/30 transition-all"
+        >
+          🔐 Admin
+        </a>
+      </div>
 
       {/* Footer */}
       <footer className="border-t border-neon-cyan/20 mt-12 sm:mt-16 py-6 sm:py-8 bg-gradient-to-t from-[#0a0e27] to-transparent">

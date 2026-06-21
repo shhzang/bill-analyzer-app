@@ -165,6 +165,13 @@ export default function Home() {
         </div>
       </header>
 
+      {/* Share Section - Top of Page */}
+      <div className="bg-gradient-to-b from-[#0a0e27]/50 to-transparent border-b border-neon-cyan/10">
+        <div className="container py-6 sm:py-8">
+          <ShareButtons />
+        </div>
+      </div>
+
       {/* Main content */}
       <main className="container py-8 sm:py-12">
         {/* Anxiety Carousel Section */}
@@ -266,11 +273,6 @@ export default function Home() {
             </div>
           </section>
         )}
-
-        {/* Share Section */}
-        <section className="mb-12 sm:mb-16 p-6 sm:p-8 neon-box rounded-lg">
-          <ShareButtons />
-        </section>
 
         {/* Info Section */}
         <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">

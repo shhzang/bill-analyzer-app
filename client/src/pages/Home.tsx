@@ -7,6 +7,7 @@ import FileUploadZone from '@/components/FileUploadZone';
 import UserTestimonials from '@/components/UserTestimonials';
 import LoadingAnimation from '@/components/LoadingAnimation';
 import UserInfoModal from '@/components/UserInfoModal';
+import ShareButtons from '@/components/ShareButtons';
 import { trpc } from '@/lib/trpc';
 import { toast } from 'sonner';
 
@@ -265,6 +266,11 @@ export default function Home() {
             </div>
           </section>
         )}
+
+        {/* Share Section */}
+        <section className="mb-12 sm:mb-16 p-6 sm:p-8 neon-box rounded-lg">
+          <ShareButtons />
+        </section>
 
         {/* Info Section */}
         <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">

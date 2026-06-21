@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { trpc } from '@/lib/trpc';
 import { toast } from 'sonner';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, AlertCircle } from 'lucide-react';
 
 interface UserInfoModalProps {
   isOpen: boolean;
@@ -38,6 +38,27 @@ const COUNTRIES = [
   'Vatican City', 'Venezuela', 'Vietnam', 'Yemen', 'Zambia', 'Zimbabwe'
 ];
 
+// Validation functions
+const validateEmail = (email: string): { valid: boolean; error?: string } => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return { valid: false, error: 'Invalid email format' };
+  }
+  return { valid: true };
+};
+
+const validatePhone = (phone: string): { valid: boolean; error?: string } => {
+  // Remove spaces, dashes, and parentheses
+  const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+  
+  // Check if it starts with + or is a valid number
+  if (!/^\+?[0-9]{7,15}$/.test(cleanPhone)) {
+    return { valid: false, error: 'Phone must be 7-15 digits (can start with +)' };
+  }
+  
+  return { valid: true };
+};
+
 export default function UserInfoModal({ isOpen, onClose, onSubmit }: UserInfoModalProps) {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -48,12 +69,14 @@ export default function UserInfoModal({ isOpen, onClose, onSubmit }: UserInfoMod
   const [searchTerm, setSearchTerm] = useState('');
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const submitMutation = trpc.submissions.create.useMutation({
     onSuccess: () => {
       toast.success('✅ Information submitted successfully!');
       setFormData({ fullName: '', phone: '', country: '', email: '' });
       setSearchTerm('');
+      setErrors({});
       onSubmit();
       onClose();
     },
@@ -67,28 +90,69 @@ export default function UserInfoModal({ isOpen, onClose, onSubmit }: UserInfoMod
     country.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    // Validate full name
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = 'Full name is required';
+    }
+
+    // Validate phone
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    } else {
+      const phoneValidation = validatePhone(formData.phone);
+      if (!phoneValidation.valid) {
+        newErrors.phone = phoneValidation.error || 'Invalid phone number';
+      }
+    }
+
+    // Validate country
+    if (!formData.country.trim()) {
+      newErrors.country = 'Country is required';
+    }
+
+    // Validate email
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else {
+      const emailValidation = validateEmail(formData.email);
+      if (!emailValidation.valid) {
+        newErrors.email = emailValidation.error || 'Invalid email';
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.fullName.trim()) {
-      toast.error('Please enter your full name');
-      return;
-    }
-    if (!formData.phone.trim()) {
-      toast.error('Please enter your phone number');
-      return;
-    }
-    if (!formData.country.trim()) {
-      toast.error('Please select your country');
-      return;
-    }
-    if (!formData.email.trim()) {
-      toast.error('Please enter your email');
+    if (!validateForm()) {
+      toast.error('❌ Please fix the errors below');
       return;
     }
 
     setIsSubmitting(true);
     await submitMutation.mutateAsync(formData);
+  };
+
+  const handlePhoneChange = (value: string) => {
+    setFormData({ ...formData, phone: value });
+    // Clear error when user starts typing
+    if (errors.phone) {
+      setErrors({ ...errors, phone: '' });
+    }
+  };
+
+  const handleEmailChange = (value: string) => {
+    setFormData({ ...formData, email: value });
+    // Clear error when user starts typing
+    if (errors.email) {
+      setErrors({ ...errors, email: '' });
+    }
   };
 
   return (
@@ -110,9 +174,19 @@ export default function UserInfoModal({ isOpen, onClose, onSubmit }: UserInfoMod
               type="text"
               value={formData.fullName}
               onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-              className="w-full px-4 py-2 bg-black border-2 border-neon-cyan/30 text-white rounded-lg focus:outline-none focus:border-neon-cyan focus:shadow-lg focus:shadow-neon-cyan/50 transition-all"
+              className={`w-full px-4 py-2 bg-black border-2 rounded-lg focus:outline-none transition-all text-white ${
+                errors.fullName
+                  ? 'border-red-500 focus:shadow-lg focus:shadow-red-500/50'
+                  : 'border-neon-cyan/30 focus:border-neon-cyan focus:shadow-lg focus:shadow-neon-cyan/50'
+              }`}
               placeholder="Enter your full name"
             />
+            {errors.fullName && (
+              <div className="flex items-center gap-1 mt-1 text-red-400 text-xs">
+                <AlertCircle size={14} />
+                {errors.fullName}
+              </div>
+            )}
           </div>
 
           {/* Phone */}
@@ -123,10 +197,21 @@ export default function UserInfoModal({ isOpen, onClose, onSubmit }: UserInfoMod
             <input
               type="tel"
               value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full px-4 py-2 bg-black border-2 border-neon-cyan/30 text-white rounded-lg focus:outline-none focus:border-neon-cyan focus:shadow-lg focus:shadow-neon-cyan/50 transition-all"
-              placeholder="Enter your phone number"
+              onChange={(e) => handlePhoneChange(e.target.value)}
+              className={`w-full px-4 py-2 bg-black border-2 rounded-lg focus:outline-none transition-all text-white ${
+                errors.phone
+                  ? 'border-red-500 focus:shadow-lg focus:shadow-red-500/50'
+                  : 'border-neon-cyan/30 focus:border-neon-cyan focus:shadow-lg focus:shadow-neon-cyan/50'
+              }`}
+              placeholder="e.g., +1 (555) 123-4567 or 5551234567"
             />
+            {errors.phone && (
+              <div className="flex items-center gap-1 mt-1 text-red-400 text-xs">
+                <AlertCircle size={14} />
+                {errors.phone}
+              </div>
+            )}
+            <p className="text-gray-400 text-xs mt-1">Format: 7-15 digits, can include +, -, spaces, ()</p>
           </div>
 
           {/* Country */}
@@ -138,11 +223,22 @@ export default function UserInfoModal({ isOpen, onClose, onSubmit }: UserInfoMod
               <button
                 type="button"
                 onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                className="w-full px-4 py-2 bg-black border-2 border-neon-cyan/30 text-white rounded-lg focus:outline-none focus:border-neon-cyan focus:shadow-lg focus:shadow-neon-cyan/50 transition-all flex justify-between items-center"
+                className={`w-full px-4 py-2 bg-black border-2 rounded-lg focus:outline-none transition-all flex justify-between items-center text-white ${
+                  errors.country
+                    ? 'border-red-500 focus:shadow-lg focus:shadow-red-500/50'
+                    : 'border-neon-cyan/30 focus:border-neon-cyan focus:shadow-lg focus:shadow-neon-cyan/50'
+                }`}
               >
                 <span>{formData.country || 'Select country...'}</span>
                 <ChevronDown size={18} className={`transition-transform ${showCountryDropdown ? 'rotate-180' : ''}`} />
               </button>
+
+              {errors.country && (
+                <div className="flex items-center gap-1 mt-1 text-red-400 text-xs">
+                  <AlertCircle size={14} />
+                  {errors.country}
+                </div>
+              )}
 
               {showCountryDropdown && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-black border-2 border-neon-cyan/50 rounded-lg shadow-lg shadow-neon-cyan/30 z-50 max-h-48 overflow-hidden flex flex-col">
@@ -163,6 +259,9 @@ export default function UserInfoModal({ isOpen, onClose, onSubmit }: UserInfoMod
                             setFormData({ ...formData, country });
                             setShowCountryDropdown(false);
                             setSearchTerm('');
+                            if (errors.country) {
+                              setErrors({ ...errors, country: '' });
+                            }
                           }}
                           className="w-full text-left px-4 py-2 text-white hover:bg-neon-cyan/20 hover:text-neon-cyan transition-colors"
                         >
@@ -186,10 +285,20 @@ export default function UserInfoModal({ isOpen, onClose, onSubmit }: UserInfoMod
             <input
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-2 bg-black border-2 border-neon-cyan/30 text-white rounded-lg focus:outline-none focus:border-neon-cyan focus:shadow-lg focus:shadow-neon-cyan/50 transition-all"
+              onChange={(e) => handleEmailChange(e.target.value)}
+              className={`w-full px-4 py-2 bg-black border-2 rounded-lg focus:outline-none transition-all text-white ${
+                errors.email
+                  ? 'border-red-500 focus:shadow-lg focus:shadow-red-500/50'
+                  : 'border-neon-cyan/30 focus:border-neon-cyan focus:shadow-lg focus:shadow-neon-cyan/50'
+              }`}
               placeholder="Enter your email"
             />
+            {errors.email && (
+              <div className="flex items-center gap-1 mt-1 text-red-400 text-xs">
+                <AlertCircle size={14} />
+                {errors.email}
+              </div>
+            )}
           </div>
 
           {/* Submit Button */}

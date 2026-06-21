@@ -64,10 +64,14 @@ export const appRouter = router({
     create: publicProcedure
       .input(
         z.object({
-          fullName: z.string().min(1, "Full name is required"),
-          phone: z.string().min(1, "Phone is required"),
+          fullName: z.string().min(1, "Full name is required").max(255, "Full name too long"),
+          phone: z.string()
+            .min(1, "Phone is required")
+            .regex(/^\+?[0-9\s\-\(\)]{7,20}$/, "Phone must be 7-15 digits (can include +, -, spaces, ())"),
           country: z.string().min(1, "Country is required"),
-          email: z.string().email("Valid email is required"),
+          email: z.string()
+            .email("Valid email is required")
+            .max(320, "Email too long"),
         })
       )
       .mutation(async ({ input }) => {

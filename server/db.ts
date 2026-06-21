@@ -124,3 +124,21 @@ export async function getAllUserSubmissions() {
     throw error;
   }
 }
+
+export async function deleteUserSubmission(id: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot delete submission: database not available");
+    return undefined;
+  }
+
+  try {
+    const result = await db
+      .delete(userSubmissions)
+      .where(eq(userSubmissions.id, id));
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to delete submission:", error);
+    throw error;
+  }
+}

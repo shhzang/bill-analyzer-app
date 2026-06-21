@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { trpc } from '@/lib/trpc';
 import { toast } from 'sonner';
-import { LogOut, Download } from 'lucide-react';
+import { LogOut, Download, Trash2 } from 'lucide-react';
 
 const ADMIN_PASSWORD = 'Ai318318';
 
@@ -14,6 +14,16 @@ export default function Admin() {
 
   const submissionsQuery = trpc.submissions.getAll.useQuery(undefined, {
     enabled: isLoggedIn,
+  });
+
+  const deleteMutation = trpc.submissions.delete.useMutation({
+    onSuccess: () => {
+      toast.success('✅ Submission deleted successfully!');
+      submissionsQuery.refetch();
+    },
+    onError: (error) => {
+      toast.error(`❌ ${error.message}`);
+    },
   });
 
   const handleLogin = (e: React.FormEvent) => {
@@ -105,9 +115,10 @@ export default function Admin() {
 
             <Button
               type="submit"
-              className="w-full bg-neon-pink text-black font-bold py-3 rounded-lg hover:shadow-lg hover:shadow-neon-pink/60 transition-all active:scale-95"
+              className="w-full bg-gradient-to-r from-neon-pink to-neon-pink/80 text-black font-bold py-3 rounded-lg hover:shadow-lg hover:shadow-neon-pink/60 transition-all active:scale-95 flex items-center justify-center gap-2"
             >
-              Login
+              <span>🔓</span>
+              <span>Login</span>
             </Button>
           </form>
         </DialogContent>
@@ -178,12 +189,13 @@ export default function Admin() {
                   <th className="px-6 py-4 text-left text-neon-pink font-bold">Country</th>
                   <th className="px-6 py-4 text-left text-neon-pink font-bold">Email</th>
                   <th className="px-6 py-4 text-left text-neon-pink font-bold">Submitted At</th>
+                  <th className="px-6 py-4 text-left text-neon-pink font-bold">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {submissionsQuery.isLoading ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
+                    <td colSpan={7} className="px-6 py-8 text-center text-gray-400">
                       Loading submissions...
                     </td>
                   </tr>
@@ -205,11 +217,25 @@ export default function Admin() {
                       <td className="px-6 py-4 text-gray-400 text-sm">
                         {new Date(submission.createdAt).toLocaleString()}
                       </td>
+                      <td className="px-6 py-4">
+                        <button
+                          onClick={() => {
+                            if (confirm('Are you sure you want to delete this submission?')) {
+                              deleteMutation.mutate({ id: submission.id });
+                            }
+                          }}
+                          disabled={deleteMutation.isPending}
+                          className="inline-flex items-center gap-1 px-3 py-1 bg-red-500/20 text-red-400 text-sm font-bold rounded hover:bg-red-500/40 transition-colors disabled:opacity-50 active:scale-95"
+                        >
+                          <Trash2 size={16} />
+                          Delete
+                        </button>
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
+                    <td colSpan={7} className="px-6 py-8 text-center text-gray-400">
                       No submissions yet
                     </td>
                   </tr>

@@ -4,7 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { analyzeBillWithDeepSeek, extractTextFromBase64 } from "./deepseek";
-import { createUserSubmission, getAllUserSubmissions } from "./db";
+import { createUserSubmission, getAllUserSubmissions, deleteUserSubmission } from "./db";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -89,6 +89,21 @@ export const appRouter = router({
         } catch (error) {
           console.error('Submission error:', error);
           throw new Error('Failed to submit user information');
+        }
+      }),
+
+    delete: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        try {
+          await deleteUserSubmission(input.id);
+          return {
+            success: true,
+            message: "Submission deleted successfully",
+          };
+        } catch (error) {
+          console.error('Delete error:', error);
+          throw new Error('Failed to delete submission');
         }
       }),
 
